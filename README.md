@@ -130,6 +130,7 @@ job finished successfully for the day = f2021-02-15
 ### Postgres and Docker
 
 **1.2.2 Ingesting NY Taxi Data to Postgres**
+
 To download the data that we are going to use(NYC Taxi Cab Dataset) us the below command:
 
 ```
@@ -165,7 +166,28 @@ Now at this point we have successfully connected postgres image with docker!
 
 There must be a way to query the database in postgres right? Here's where ```pgcli``` comes into the picture giving us ability to write sql commands in the cli.
 
+**Working with pgcli**
+
+- Installing ```pgcli```
+Use the following command:
+```
+pip install pgcli
+```
+
+- Use ```pgcli``` to connect to postgres
+```
+pgcli -h localhost -p 5432 -u root -d ny_taxi
+```
+
+- Some commands you can test to check whether cli works or not
+    - ```\dt``` -> should show the tables list
+    - ```SELECT COUNT(1) FROM nyc_taxi_data```
+
 **Problem with ```postgrescli```**
+
+The major problem with pgcli is that its just a command line interface for executing simple queries in test, but it would be great if we could have a clean GUI right? Here is where ```pgadmin``` comes into play.
+
+
 
 
 
