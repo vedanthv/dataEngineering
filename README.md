@@ -127,6 +127,49 @@ Output would be:
 job finished successfully for the day = f2021-02-15
 ```
 
+### Postgres and Docker
+
+**1.2.2 Ingesting NY Taxi Data to Postgres**
+To download the data that we are going to use(NYC Taxi Cab Dataset) us the below command:
+
+```
+wget https://github.com/DataTalksClub/nyc-tlc-data/releases/download/yellow/yellow_tripdata_2021-01.csv.gz
+```
+
+**Running Postgres from Docker**
+
+```
+docker run -it \
+    -e POSTGRES_USER="root" \
+    -e POSTGRES_PASSWORD="root" \
+    -e POSTGRES_DB='ny_taxi' \
+    --volume //DRIVELETTER/INSERTPATHHERE/ny_taxi_postgres_data:/var/lib/postgresql/data \
+    -p 5432:5432 \
+     postgres:13
+```
+
+**Meaning of the code :** 
+```
+-e -> a tag that allows us to config stuff
+
+--volume -> the dataset path that needs to be inserted in the postgres db
+
+-p -> port on which postgres should run
+
+postgres:13 -> version of postgres
+```
+
+At this point a directory ny_taxi_postgres_data must be created. **Do not worry if its empty, as long as the command runs successfully, everything is fine**
+
+Now at this point we have successfully connected postgres image with docker!
+
+There must be a way to query the database in postgres right? Here's where ```pgcli``` comes into the picture giving us ability to write sql commands in the cli.
+
+**Problem with ```postgrescli```**
+
+
+
+
 
 
 
