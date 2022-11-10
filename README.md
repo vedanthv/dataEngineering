@@ -246,6 +246,62 @@ docker run -it \
   dpage/pgadmin4
 ```
 
+Now everythin should be set and you should be able to create server in pgAdmin.
+
+#### Data Ingestion with Docker Backend
+
+Let's now convert our ipynb file to a neat python pipeline.
+
+First go to pgAdmin dash board and drop the existing tables.
+
+```DROP TABLE nyc_cab_data;```
+
+**ingest-data.py**
+
+1. Importing Dependencies
+
+```
+import os
+import argparse
+
+from time import time
+
+import pandas as pd
+from sqlalchemy import create_engine
+
+```
+
+```argparse``` is used to parse the arguments from the command line.
+```
+
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Ingest CSV data to Postgres')
+
+    parser.add_argument('--user', required=True, help='user name for postgres')
+    parser.add_argument('--password', required=True, help='password for postgres')
+    parser.add_argument('--host', required=True, help='host for postgres')
+    parser.add_argument('--port', required=True, help='port for postgres')
+    parser.add_argument('--db', required=True, help='database name for postgres')
+    parser.add_argument('--table_name', required=True, help='name of the table where we will write the results to')
+    parser.add_argument('--url', required=True, help='url of the csv file')
+
+    args = parser.parse_args()
+
+    main(args)
+```
+
+In the above code we specify the arguments that the user can enter. Then we call the ```parser.parse_args()``` to collect all the args in one array and then pass them to the ```main``` function as an array.
+
+Check the ```ingest-data.py``` script to know more about main function.
+
+Now we must get back the dataset on pgAdmin Dashboard.
+
+
+
+
+
+
+
 
 
 
