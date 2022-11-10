@@ -187,6 +187,69 @@ pgcli -h localhost -p 5432 -u root -d ny_taxi
 
 The major problem with pgcli is that its just a command line interface for executing simple queries in test, but it would be great if we could have a clean GUI right? Here is where ```pgadmin``` comes into play.
 
+#### pgadmin setup and configuration
+
+pgAdmin provides a clear GUI for postgres data querying.
+
+**installing pgAdmin**
+
+Let's install pgadmin by creating the docker image for it.
+
+```
+docker run -it \
+  -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" \
+  -e PGADMIN_DEFAULT_PASSWORD="root" \
+  -p 8080:80 \
+  dpage/pgadmin4
+```
+
+Here we provide an email and password for access creds and specify the port.
+
+**Is your pgadmin dashboard loading slowly?**
+
+If this is the case, change ```dpage/pgadmin4``` to ```dpage/pgadmin3``` and it loads faster.
+
+**Creating Server on pgAdmin**
+
+When we try to create server as shown in the video, we see that there is an error because our pgAdmin exists in one container and postgres is in another container. There is no connection between them. 
+
+Using Docker Networks, we can put two or more images in one Docker Container and run everything smoothly. Let's do that now.
+
+1. **Creating a docker network**
+
+```docker network create pg-network```
+
+2. Adding postgres to our network
+
+```
+docker run -it \
+    -e POSTGRES_USER="root" \
+    -e POSTGRES_PASSWORD="root" \
+    -e POSTGRES_DB='ny_taxi' \
+    --volume //DRIVELETTER/INSERTPATHHERE/ny_taxi_postgres_data:/var/lib/postgresql/data \
+    -p 5432:5432 \
+    --network=pgnetwork \
+    --name pg-database \
+     postgres:13
+     
+```
+
+3. Adding pgAdmin to out network
+
+```
+docker run -it \
+  -e PGADMIN_DEFAULT_EMAIL="admin@admin.com" \
+  -e PGADMIN_DEFAULT_PASSWORD="root" \
+  -p 8080:80 \
+  --network=pg-network \
+  --name pgadmin-2 \
+  dpage/pgadmin4
+```
+
+
+
+
+
 
 
 
