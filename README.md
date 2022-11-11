@@ -296,6 +296,8 @@ Check the ```ingest-data.py``` script to know more about main function.
 
 Now we must get back the dataset on pgAdmin Dashboard.
 
+**Dockerizing the Ingestion Script**
+
 
 
 
