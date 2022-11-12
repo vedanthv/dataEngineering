@@ -317,3 +317,4 @@ Now we must get back the dataset on pgAdmin Dashboard.
 
 
 
+export GOOGLE_APPLICATION_CREDENTIALS="</home/vedanth/dataEngineering/week-1/premium-bloom-368403-091ed03452fd.json"
