@@ -299,22 +299,146 @@ Now we must get back the dataset on pgAdmin Dashboard.
 **Dockerizing the Ingestion Script**
 
 
+## SQL Refresher
 
+``` sql
+-- check if the table is there
+SELECT COUNT(1) FROM zones;
 
+-- join zones and nyc_taxi_data
+SELECT
+   tpep_pickup_datetime,
+   tpep_dropoff_datetime,
+   total_amount,
+   CONCAT(zpu."Borough",' / ',zpu."Zone")AS "pick_up_loc",
+   CONCAT(zdo."Borough" ,' / ' ,zdo."Zone") AS "dropoff_loc"
+   
+FROM
+   yellow_taxi_data t,
+   zones zpu,
+   zones zdo
 
+WHERE
+   t."PULocationID" = zpu."LocationID" AND
+   t."DOLocationID" = zdo."LocationID"
 
+LIMIT 100;
 
+-- inner join
+SELECT
+   tpep_pickup_datetime,
+   tpep_dropoff_datetime,
+   total_amount,
+   CONCAT(zpu."Borough",' / ',zpu."Zone")AS "pick_up_loc",
+   CONCAT(zdo."Borough" ,' / ' ,zdo."Zone") AS "dropoff_loc"
+   
+FROM
+   yellow_taxi_data t JOIN zones zpu 
+   ON t."PULocationID" = zpu."LocationID"
+   JOIN zones zdo
+   ON t."DOLocationID" = zdo."LocationID"
+ 
+LIMIT 100;
 
+-- check if pickup location id is null
 
+SELECT
+   tpep_pickup_datetime,
+   tpep_dropoff_datetime,
+   total_amount,
+   "PULocationID",
+   "DOLocationID"
+   
+FROM
+   yellow_taxi_data t 
+WHERE 
+   "PULocationID" is NULL
 
+-- drop off location ids in trips db but not zones db
+SELECT
+   tpep_pickup_datetime,
+   tpep_dropoff_datetime,
+   total_amount,
+   "PULocationID",
+   "DOLocationID"
+   
+FROM
+   yellow_taxi_data t 
+WHERE 
+   "DOLocationID" NOT IN (
+	   SELECT "LocationID" FROM zones)
 
+LIMIT 100;
 
+-- other types of joins
+-- left join - display records on left table but not on right
+SELECT
+   pickup_loc,
+   dropoff_loc,
+   tpep_pickup_datetime,
+   tpep_dropoff_datetime,
+   total_amount,
+   "PULocationID",
+   "DOLocationID"
+   
+FROM
+   yellow_taxi_data t LEFT JOIN zones zpu
+   ON t."PULocationID" = zpu."LocationID"
+   LEFT JOIN zones zdo
+   ON t."DOLocationID" = zdo."LocationID"
+LIMIT 100;
 
+-- groupby and aggregates
+-- calculate no of trips per day
+SELECT
+   CAST(tpep_dropoff_datetime AS DATE) AS "Day",
+   COUNT(1)
+FROM
+   yellow_taxi_data t
+GROUP BY
+   CAST(tpep_dropoff_datetime AS DATE) 
+ORDER BY "Day" ASC;
 
+-- day with largest number of records
+SELECT
+   CAST(tpep_dropoff_datetime AS DATE) AS "Day",
+   COUNT(1) as "count"
+FROM
+   yellow_taxi_data t
+GROUP BY
+   CAST(tpep_dropoff_datetime AS DATE) 
+ORDER BY "count" DESC;
 
+-- max amount of mney made by driver
+SELECT
+   CAST(tpep_dropoff_datetime AS DATE) AS "Day",
+   COUNT(1) as "count",
+   MAX(total_amount),
+   MAX(passenger_count)
+FROM
+   yellow_taxi_data t
+GROUP BY
+   CAST(tpep_dropoff_datetime AS DATE) 
+ORDER BY "count" DESC;
 
+-- group by multiple fields
+SELECT
+   CAST(tpep_dropoff_datetime AS DATE) AS "Day",
+   "DOLocationID",
+   COUNT(1) as "count",
+   MAX(total_amount),
+   MAX(passenger_count)
+FROM
+   yellow_taxi_data t
+GROUP BY
+   1,2
+ORDER BY 
+   "Day" ASC,
+   "DOLocationID" ASC;
+```
 
+### Google Cloud Credentials
 
-
-
+```
 export GOOGLE_APPLICATION_CREDENTIALS="</home/vedanth/dataEngineering/week-1/premium-bloom-368403-091ed03452fd.json"
+```
