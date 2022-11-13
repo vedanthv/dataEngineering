@@ -353,7 +353,57 @@ Here we get the download the csv data using *wget* command.
     df.to_sql(name=table_name, con=engine, if_exists='append')
 ```
 
+Here we create an sql engine with the username, password and host.
+Then the data is read in iterations and a few dtype changes are made.
+Finally the data is added to postgres db.
 
+```
+while True: 
+
+        try:
+            t_start = time()
+            
+            df = next(df_iter)
+
+            df.tpep_pickup_datetime = pd.to_datetime(df.tpep_pickup_datetime)
+            df.tpep_dropoff_datetime = pd.to_datetime(df.tpep_dropoff_datetime)
+
+            df.to_sql(name=table_name, con=engine, if_exists='append')
+
+            t_end = time()
+
+            print('inserted another chunk, took %.3f second' % (t_end - t_start))
+
+        except StopIteration:
+            print("Finished ingesting data into the postgres database")
+            break
+```
+
+Above code inserts data chunk by chunk in iterations of 10000 each time and then Stops Iterating.
+
+```
+if __name__ == '__main__':
+    parser = argparse.ArgumentParser(description='Ingest CSV data to Postgres')
+
+    parser.add_argument('--user', required=True, help='user name for postgres')
+    parser.add_argument('--password', required=True, help='password for postgres')
+    parser.add_argument('--host', required=True, help='host for postgres')
+    parser.add_argument('--port', required=True, help='port for postgres')
+    parser.add_argument('--db', required=True, help='database name for postgres')
+    parser.add_argument('--table_name', required=True, help='name of the table where we will write the results to')
+    parser.add_argument('--url', required=True, help='url of the csv file')
+
+    args = parser.parse_args()
+
+    main(args)
+
+```
+
+Above is the main functio used to define command line arguments with their helper description text.
+
+```ArgumentParser ``` is used to define the argument parser object
+
+```parse_args``` stores the arguments in an array and then this is passed to the main function as params
 
 
 ## SQL Refresher
