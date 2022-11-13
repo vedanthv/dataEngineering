@@ -40,5 +40,12 @@ resource "google_storage_bucket" "data-lake-bucket" {
   force_destroy = true // derletes all objects of bucket
 }
 
+resource "google_bigquery_dataset" "dataset" {
+  dataset_id = var.BQ_DATASET
+  project    = var.project
+  location   = var.region
+}
+
+
 
 
