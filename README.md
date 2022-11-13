@@ -403,7 +403,26 @@ Above is the main functio used to define command line arguments with their helpe
 
 ```ArgumentParser ``` is used to define the argument parser object
 
-```parse_args``` stores the arguments in an array and then this is passed to the main function as params
+```parse_args``` stores the arguments in an array and then this is passed to the main function as params.
+
+**Modifying Dockerfile**
+
+```
+RUN apt-get install wget
+RUN pip install pandas sqlalchemy psycopg2
+
+
+
+WORKDIR /app
+COPY ingest-data.py ingest-data.py
+
+ENTRYPOINT [ "python" , "ingest-data.py" ]
+
+```
+
+Step 1 : we install wget and sqlalchemy
+Step 2 : we create file ingest-data.py
+Step 3 : we specify entrypoint as ```python ingest-data.py```
 
 
 ## SQL Refresher
